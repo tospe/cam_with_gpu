@@ -16,7 +16,7 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 
 - [x] Simulator + tracer build (`scripts/build_sim.sh`)
 - [x] Structural smoke run (`results/smoke-dep_chain-sxmcfg/`), uncalibrated
-- [ ] Register-value tracing crash (NVBit 1.8 vs driver 610): diagnosed / worked around
+- [x] Tracer crash: spinlock mode without detection data, fixed `f2d5df6`; use `scripts/trace_app.sh`
 - [ ] `SM90_H100_PCIe` config on `h100-cam`, each parameter classified
 - [ ] Microbenchmarks with warm-up + repeats; hardware timing on dedicated GPU
 - [ ] Validation kernels (guide §5): shared-mem producer/consumer, async copy, barrier phases, warp-specialized pipeline
@@ -28,7 +28,7 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 | Repo | Branch | Commit |
 |---|---|---|
 | cam_with_gpu | main | see `git log` |
-| accel-sim-framework2 | h100-cam | `d930ad6` (= upstream dev, unmodified) |
+| accel-sim-framework2 | h100-cam | `f2d5df6` (upstream `d930ad6` + tracer error-check fix) |
 | gpgpu-sim_distribution2 | h100-cam | `91880c5` (= upstream dev, unmodified) |
 | NVBit | release | v1.8 |
 

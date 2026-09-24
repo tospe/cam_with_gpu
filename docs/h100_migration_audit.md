@@ -52,13 +52,13 @@ Build notes:
 |---|---|
 | Simulator build | **pass** |
 | NVBit tracer build | **pass** |
-| Trace of `dep_chain` on H100 PCIe | **pass without** `ALLOW_REG_VAL_TRACING`; **segfault with** it |
+| Trace of `dep_chain` on H100 PCIe | **pass**, incl. register values + spinlock marking, via `scripts/trace_app.sh` (see §6.1) |
 | Simulate on `SM90_H100` | **pass** (`results/smoke-dep_chain-sxmcfg/`) — structural only, uncalibrated |
 | Old-fork (V100) replay | not attempted; not required |
 
 ## 6. Blocking risks
 
-1. **NVBit vs. driver.** NVBit 1.8 (latest) documents support for drivers ≤ 575.xx; this machine has 610.43. Plain tracing works on a trivial kernel, but register-value tracing (needed for TMA descriptors and `mbarrier` operands) segfaults. This blocks tracing the TMA/async-barrier tests (guide §5 rows 3–5). Options: debug the crash in the tracer (`record_reg_vals` path), test NVBit's own `record_reg_vals` sample to see whether the fault is in NVBit or Accel-Sim's tool, or trace on a machine with a ≤575 driver.
+1. ~~**Tracer crash.**~~ **Resolved 2026-09-23.** Not NVBit or the driver: NVBit's own `record_reg_vals` sample and `ALLOW_REG_VAL_TRACING=1` alone both work. The crash was `SPINLOCK_HANDLING_MODE` 1/2 without first running the spinlock detection phases: the tracer dereferenced a null `spinlock_instr_map` entry (`tracer_tool.cu`). Fixed to exit with a clear error (`accel-sim-framework2` `f2d5df6`); `scripts/trace_app.sh` always runs detection first. Residual risk: NVBit 1.8 still officially supports drivers ≤ 575 only (we run 610); re-check when tracing TMA/WGMMA/cluster kernels.
 2. **PCIe config** does not exist upstream (§3).
 3. **Shared GPU**: user reports it will become dedicated; record co-tenancy in each hardware run until then.
 

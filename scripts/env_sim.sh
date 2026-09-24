@@ -10,7 +10,7 @@ export PATH="$T/bin:$PATH"
 export CC="$T/bin/x86_64-conda-linux-gnu-gcc" CXX="$T/bin/x86_64-conda-linux-gnu-g++"
 export CPATH="$T/include:$T/targets/x86_64-linux/include"
 export LIBRARY_PATH="$T/lib"
-export LD_LIBRARY_PATH="$T/lib:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="$T/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export NVCC_PREPEND_FLAGS="-ccbin ${CXX}"
 export ACCELSIM_FRAMEWORK="${CAM_ROOT}/accel-sim-framework2"
 # gpu-simulator/gpgpu-sim is a symlink to ${CAM_ROOT}/gpgpu-sim_distribution2

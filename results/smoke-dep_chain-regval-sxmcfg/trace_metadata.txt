@@ -1,0 +1,8 @@
+date: 2026-09-23T21:40:15-04:00
+command: ./dep_chain
+cwd: /localhome/tsousape/cam_with_gpu/microbenchmarks/hopper_validation
+SPINLOCK_HANDLING_MODE=2 ALLOW_REG_VAL_TRACING=1
+accel-sim-framework2: d930ad6d02c09bb56867132583735aba0389cff4 (dirty)
+nvbit: v1.8
+nvcc: Build cuda_12.9.r12.9/compiler.36037853_0
+gpu: NVIDIA H100 PCIe, 610.43.02, 1755 MHz, 22301 MiB, 100 %
