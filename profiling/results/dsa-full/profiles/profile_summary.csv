@@ -1,0 +1,10 @@
+case,kernels_per_iter,distinct_kernels,gpu_kernel_time_us_per_iter,inter_kernel_gap_us_total,gap_fraction_of_span,top_kernel,top_kernel_us_per_iter
+dsa_torch_bf16_N32768_B1_score,5.0,5,37.114,955.02,0.5627,"void at::native::reduce_kernel<512, 1, at::native::ReduceOp<float, at::native::func_wrapper_t<float, at::nativ",11.377
+dsa_torch_bf16_N32768_B1_select,21.0,9,43.841,1064.17,0.5483,"void at::native::mbtopk::computeBlockDigitCounts<float, unsigned int, unsigned int, 1>(at::cuda::detail::Tenso",9.096
+dsa_torch_bf16_N32768_B1_combined,26.0,14,82.418,1668.08,0.503,"void at::native::reduce_kernel<512, 1, at::native::ReduceOp<float, at::native::func_wrapper_t<float, at::nativ",12.002
+dsa_deepgemm_N32768_B1_score,2.0,2,6.493,438.24,0.7714,"void deep_gemm::sm90_fp8_paged_mqa_logits<1u, 64u, 128u, 64u, true, false, 3u, 3u, 256u, 128u, 512u, float>(un",4.208
+dsa_deepgemm_N32768_B1_select,21.0,9,43.719,1128.27,0.5634,"void at::native::mbtopk::computeBlockwiseWithinKCounts<unsigned int, float>(unsigned int*, short*, unsigned in",9.133
+dsa_deepgemm_N32768_B1_combined,23.0,11,50.746,1331.02,0.5674,"void at::native::mbtopk::computeBlockDigitCounts<float, unsigned int, unsigned int, 1>(at::cuda::detail::Tenso",9.469
+router_E1048576_B1_score,2.0,2,4621.293,74.14,0.0008,nvjet_tst_512x8_64x3_2x1_v_bz_TNT,4620.493
+router_E1048576_B1_select,16.0,10,69.195,483.14,0.2588,"at::native::mbtopk::computeDigitCumSum(short*, unsigned int*, unsigned int)",29.407
+router_E1048576_B1_combined,18.0,11,4693.688,498.28,0.0053,nvjet_tst_512x8_64x3_2x1_v_bz_TNT,4621.043

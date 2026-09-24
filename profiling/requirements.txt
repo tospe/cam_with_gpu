@@ -1,0 +1,12 @@
+# Pinned dependency set for the H100 search/top-k benchmarks.
+#
+# torch is built against CUDA 12.9 to match the CUDA Toolkit required by the
+# pinned DeepGEMM commit (>= 12.9).  Keeping the torch CUDA build and the
+# toolkit used for DeepGEMM's JIT at the same major/minor version avoids
+# cuBLASLt header/runtime mismatches.
+--extra-index-url https://download.pytorch.org/whl/cu129
+torch==2.10.0+cu129
+numpy==2.3.4
+pandas==2.3.3
+matplotlib==3.10.7
+PyYAML==6.0.3

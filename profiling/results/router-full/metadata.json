@@ -1,0 +1,116 @@
+{
+  "run_id": "router-full",
+  "workload": "router",
+  "command": "benchmarks/bench_router.py --config configs/full.yaml --run-id router-full --note Milestone B full router sweep: E = 16 .. 2^20, eager and CUDA-graph",
+  "resolved_config": {
+    "config": "configs/full.yaml",
+    "device": "cuda:0",
+    "dtype": "bf16",
+    "num_experts": [
+      16,
+      64,
+      256,
+      1024,
+      4096,
+      16384,
+      65536,
+      262144,
+      1048576
+    ],
+    "batch_sizes": [
+      1,
+      8
+    ],
+    "dim": 4096,
+    "topk": 8,
+    "seed": 0,
+    "warmup": 20,
+    "iters": 100,
+    "token_pool": 256,
+    "topk_sorted": true,
+    "measure_host": false,
+    "graph_modes": [
+      "eager",
+      "cudagraph"
+    ],
+    "memory_budget_gib": 60.0,
+    "out_dir": "/localhome/tsousape/cam_with_gpu/results",
+    "run_id": "router-full",
+    "dry_run": false,
+    "note": "Milestone B full router sweep: E = 16 .. 2^20, eager and CUDA-graph"
+  },
+  "input_distribution": "standard_normal(0,1), torch.randn with a per-run seeded CUDA Generator",
+  "router_note": "Flat router: logits = hidden @ W.T then top-k. Not a model-specific MoE router (no activation, correction bias, expert-group selection, or routing-weight normalisation). D is a synthetic default unless taken from a specific model.",
+  "environment": {
+    "host": {
+      "hostname": "mns00.cse.nd.edu",
+      "platform": "Linux-4.18.0-553.126.1.el8_10.x86_64-x86_64-with-glibc2.28",
+      "processor": "x86_64",
+      "cpu_count": 64
+    },
+    "gpu_nvidia_smi": {
+      "available": true,
+      "name": "NVIDIA H100 PCIe",
+      "uuid": "GPU-ad97a198-f167-e71a-a197-3b0908eb6195",
+      "pci.bus_id": "00000000:3D:00.0",
+      "memory.total": "81559 MiB",
+      "memory.free": "80613 MiB",
+      "memory.used": "459 MiB",
+      "driver_version": "610.43.02",
+      "compute_mode": "Default",
+      "persistence_mode": "Enabled",
+      "power.limit": "350.00 W",
+      "power.default_limit": "310.00 W",
+      "enforced.power.limit": "350.00 W",
+      "clocks.max.sm": "1755 MHz",
+      "clocks.max.memory": "1593 MHz",
+      "clocks.applications.graphics": "[Requested functionality has been deprecated]",
+      "clocks.sm": "1755 MHz",
+      "clocks.mem": "1593 MHz",
+      "temperature.gpu": "39",
+      "utilization.gpu": "2 %",
+      "utilization.memory": "0 %",
+      "pcie.link.gen.max": "5",
+      "pcie.link.width.max": "16",
+      "ecc.mode.current": "Enabled",
+      "mig_mode": "Disabled",
+      "compute_processes": [
+        "2615434, /localhome/tsousape/cam_with_gpu/.venv/bin/python, 450 MiB"
+      ],
+      "gpu_shared_with_other_processes": false
+    },
+    "gpu_torch": {
+      "cuda_available": true,
+      "device_index": 0,
+      "device_name": "NVIDIA H100 PCIe",
+      "compute_capability": "9.0",
+      "multi_processor_count": 114,
+      "total_memory_bytes": 85009367040,
+      "mem_get_info_free_bytes": 84528201728,
+      "mem_get_info_total_bytes": 85009367040,
+      "l2_cache_size_bytes": 52428800,
+      "warp_size": 32
+    },
+    "packages": {
+      "python": "3.12.13",
+      "torch": "2.10.0+cu129",
+      "torch_cuda": "12.9",
+      "torch_cudnn": 91002,
+      "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "numpy": "2.3.4",
+      "pandas": "2.3.3",
+      "matplotlib": "3.10.7",
+      "yaml": "6.0.3",
+      "triton": "3.6.0",
+      "deep_gemm": "2.8.0",
+      "tilelang": null
+    },
+    "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Tue_May_27_02:21:03_PDT_2025\nCuda compilation tools, release 12.9, V12.9.86\nBuild cuda_12.9.r12.9/compiler.36037853_0",
+    "env_vars": {
+      "CUDA_HOME": "/localhome/tsousape/cam_with_gpu/third_party/toolchain/env",
+      "DG_JIT_CACHE_DIR": "/localhome/tsousape/cam_with_gpu/.dg_cache"
+    },
+    "repos": {}
+  },
+  "note": "Milestone B full router sweep: E = 16 .. 2^20, eager and CUDA-graph"
+}

@@ -1,0 +1,15 @@
+# Large or regenerable artifacts: record their location/checksum in run metadata instead.
+traces/
+*.trace.xz
+*.tracez
+*.traceg
+
+# Simulator by-products
+results/**/checkpoint_files/
+results/**/perf_counter*.csv.gz
+
+# Build outputs
+microbenchmarks/**/*.o
+microbenchmarks/**/*.so
+__pycache__/
+microbenchmarks/hopper_validation/dep_chain

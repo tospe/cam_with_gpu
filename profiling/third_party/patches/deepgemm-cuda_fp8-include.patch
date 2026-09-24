@@ -1,0 +1,11 @@
+diff --git a/deep_gemm/include/deep_gemm/layout/mega_mhc.cuh b/deep_gemm/include/deep_gemm/layout/mega_mhc.cuh
+index de59a59..533be9b 100644
+--- a/deep_gemm/include/deep_gemm/layout/mega_mhc.cuh
++++ b/deep_gemm/include/deep_gemm/layout/mega_mhc.cuh
+@@ -1,5 +1,6 @@
+ #pragma once
+ 
++#include <cuda_fp8.h>
+ #include <cutlass/arch/barrier.h>
+ 
+ #include <deep_gemm/common/math.cuh>

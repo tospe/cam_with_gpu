@@ -1,0 +1,17 @@
+[submodule "accel-sim-framework2"]
+	path = accel-sim-framework2
+	url = git@github.com:tospe/accel-sim-framework2.git
+	branch = h100-cam
+[submodule "gpgpu-sim_distribution2"]
+	path = gpgpu-sim_distribution2
+	url = git@github.com:tospe/gpgpu-sim_distribution2.git
+	branch = h100-cam
+[submodule "profiling/third_party/DeepGEMM"]
+	path = profiling/third_party/DeepGEMM
+	url = https://github.com/deepseek-ai/DeepGEMM.git
+[submodule "profiling/third_party/DeepSeek-V3.2-Exp"]
+	path = profiling/third_party/DeepSeek-V3.2-Exp
+	url = https://github.com/deepseek-ai/DeepSeek-V3.2-Exp.git
+[submodule "profiling/third_party/FlashMLA"]
+	path = profiling/third_party/FlashMLA
+	url = https://github.com/deepseek-ai/FlashMLA.git

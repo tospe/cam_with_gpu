@@ -1,0 +1,31 @@
+# Main experiment sweep (Milestone B).
+common:
+  seed: 0
+  warmup: 20
+  iters: 100
+  memory_budget_gib: 60.0
+
+dsa:
+  backend: [torch_bf16, deepgemm]
+  mode: [fixed, incremental]
+  context_lens: [8192, 16384, 32768, 65536, 131072]
+  batch_sizes: [1, 8]
+  heads: 64
+  dim: 128
+  topk: 2048
+  steps: 128
+  block_kv: 64
+  incremental_trials: 20
+  query_pool: 256
+  score_chunk: 32768
+  graph_modes: [eager, cudagraph]
+
+router:
+  dtype: bf16
+  num_experts: [16, 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576]
+  batch_sizes: [1, 8]
+  dim: 4096          # synthetic default -- not taken from a specific model
+  topk: 8
+  token_pool: 256
+  topk_sorted: false   # matches DSA; ordering the k winners is not needed to dispatch
+  graph_modes: [eager, cudagraph]

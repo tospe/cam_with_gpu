@@ -1,0 +1,18 @@
+{
+  "nsys": {
+    "on_path": null,
+    "usable": false
+  },
+  "ncu": {
+    "on_path": "/localhome/tsousape/cam_with_gpu/third_party/toolchain/env/bin/ncu",
+    "version": [
+      "ERROR : nsight-compute directory is not found under /localhome/tsousape/cam_with_gpu/third_party/toolchain/env/bin/../ or /opt/nvidia. Nsight Compute is not installed on your system."
+    ],
+    "usable": false
+  },
+  "torch_profiler": {
+    "usable": true,
+    "backend": "CUPTI via torch.profiler/kineto"
+  },
+  "note": "nsys is not available from the configured conda channels; the only Nsight Compute build compatible with CUDA 12.9 (2024.1.1) segfaults on driver 610.43.02. Kernel-level evidence below comes from CUPTI."
+}
