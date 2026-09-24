@@ -35,19 +35,19 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 ## Waiting on user
 
 - [x] Guides in `docs/` (2026-09-24): V100 placement (protocol, A–F), implementation (profiling baseline), H100 extension; files renamed `GUIDE_*`, root `guide_h100.md` duplicate removed
-- [ ] Confirm the old study's CAM parameters carry over unchanged in ns (table below)
+- [ ] Decide CAM parameter strategy (proposal: all swept as hypothetical; see table note)
 - [ ] GPU dedicated (no co-tenant) before hardware timing runs
 
 ## CAM parameters (from old `moecam` study, `util/moecam/DSA-PLACEMENT.md` §3)
 
-Old values were in cycles at the V100-class 1.132 GHz clock; ns is the quantity to hold fixed on H100 (guide §3).
+Old values were in cycles at the V100-class 1.132 GHz clock. **User (2026-09-24): these values were chosen without a firm basis — treat every row as hypothetical.** Old `TECHNOLOGY.md` cites TCAM macros at 0.2–1.6 ns per subarray search (~10–25 cycles incl. merge), but those are exact/Hamming match, not FP16 H×D dot-product scoring + top-k, so they do not bound L for the DSA workload.
 
 | Parameter | Old value | In ns | Provenance |
 |---|---|---|---|
-| Search latency L | 200 cycles | 177 | user's headline estimate (8–20x above circuit estimate, old `TECHNOLOGY.md`) |
+| Search latency L | 200 cycles | 177 | hypothetical (old headline; conservative vs TCAM literature, which does not cover dot-product scoring) |
 | Readout | 1 result/cycle | 0.88 per result | hypothetical |
 | Initiation interval II | 8 cycles | 7.1 | hypothetical, swept |
-| Fill | 21 cycles / 256 B row | 18.6 per row | user's UCAMF model |
+| Fill | 21 cycles / 256 B row | 18.6 per row | hypothetical (old UCAMF model) |
 | Link bandwidth | 1024 / 150 GB/s per direction | — | hypothetical |
 | Added external delay | 0, 88, 177, 353, 707, 1200 ns **round trip** (main 353 = 2L) | — | hypothetical sensitivity points; serialization modeled separately |
 | Resident capacity | 8192 x 2048 b = 2 MB | — | controlled assumption |
