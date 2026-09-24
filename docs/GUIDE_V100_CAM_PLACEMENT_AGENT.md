@@ -13,7 +13,7 @@ Implement a small DSA-derived workload and answer:
 
 This is a **V100-based architectural extension study**, not an H100 performance prediction. The immediate deliverable is a validated four-way comparison, not a full LLM simulation.
 
-This brief governs the placement study. `AGENT_IMPLEMENTATION_GUIDE.md` describes the earlier H100 software-baseline work; its H100 dependencies and optimized-kernel requirements do not apply to this first V100 milestone.
+This brief governs the placement study. `GUIDE_AGENT_IMPLEMENTATION.md` describes the earlier H100 software-baseline work; its H100 dependencies and optimized-kernel requirements do not apply to this first V100 milestone.
 
 ## 1. Discover and preserve the existing implementation
 

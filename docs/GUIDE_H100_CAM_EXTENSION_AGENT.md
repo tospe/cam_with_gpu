@@ -12,8 +12,8 @@ This is an implementation handoff. The workspace that supplied it contains guide
 
 Related documents:
 
-- [V100 placement guide](/Users/tomas/Documents/ChatGPT/GPU_CAM/V100_CAM_PLACEMENT_AGENT_GUIDE.md): CAM semantics, A–F schedules, workload, and fairness requirements.
-- [Earlier H100 workload guide](/Users/tomas/Documents/ChatGPT/GPU_CAM/AGENT_IMPLEMENTATION_GUIDE.md): native scoring/selection measurements. This migration does not require running the complete million-expert sweep.
+- [V100 placement guide](GUIDE_V100_CAM_PLACEMENT_AGENT.md): CAM semantics, A–F schedules, workload, and fairness requirements.
+- [Earlier H100 workload guide](GUIDE_AGENT_IMPLEMENTATION.md): native scoring/selection measurements. This migration does not require running the complete million-expert sweep.
 
 ## 1. First actions: inventory and baseline preservation
 

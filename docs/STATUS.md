@@ -2,7 +2,7 @@
 
 Single place to see where the H100 CAM study stands. Update this file in the same commit as the work it describes. Detailed history goes in `worklog.md`.
 
-## Milestones (guide_h100.md)
+## Milestones (GUIDE_H100_CAM_EXTENSION_AGENT.md)
 
 | Milestone | Meaning | Status |
 |---|---|---|
@@ -34,7 +34,7 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 
 ## Waiting on user
 
-- [x] Guides in `docs/` (2026-09-24): V100 placement (protocol, A–F), implementation (profiling baseline), H100 extension (= `guide_h100.md`)
+- [x] Guides in `docs/` (2026-09-24): V100 placement (protocol, A–F), implementation (profiling baseline), H100 extension; files renamed `GUIDE_*`, root `guide_h100.md` duplicate removed
 - [ ] Confirm the old study's CAM parameters carry over unchanged in ns (table below)
 - [ ] GPU dedicated (no co-tenant) before hardware timing runs
 

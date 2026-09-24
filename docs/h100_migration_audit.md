@@ -1,6 +1,6 @@
 # H100 migration audit
 
-Status as of 2026-09-23. First deliverable of `guide_h100.md` §1.
+Status as of 2026-09-23. First deliverable of `GUIDE_H100_CAM_EXTENSION_AGENT.md` §1.
 
 ## 1. Decision: route
 
@@ -89,7 +89,7 @@ To be filled from the port: functional scoring/selection (`cam.cc`), markers (UC
 ## 9. Missing inputs
 
 - ~~Old CAM fork~~ found: see §7.
-- `V100_CAM_PLACEMENT_AGENT_GUIDE.md` and `AGENT_IMPLEMENTATION_GUIDE.md` (A–F schedules, CAM protocol) — referenced by the guide but only on another machine.
+- ~~Other guides~~: now `docs/GUIDE_V100_CAM_PLACEMENT_AGENT.md`, `docs/GUIDE_AGENT_IMPLEMENTATION.md`.
 - CAM hardware parameters: search latency, initiation interval, capacity, outstanding limit, and the meaning of the 353 ns external delay (one-way vs RTT; serialization included or not).
 - ~~Research repo~~: `git@github.com:tospe/cam_with_gpu.git`.
 
