@@ -17,3 +17,4 @@ reference/
 microbenchmarks/hopper_validation/device_props
 microbenchmarks/hopper_validation/calib
 microbenchmarks/hopper_validation/pipeline
+microbenchmarks/cam_placement/sched

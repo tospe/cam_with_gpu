@@ -1,0 +1,24 @@
+2026-09-25T17:13:33-04:00
+0 %, 0 MiB
+flush_mode=0
+fma_lat,I1=1024,I2=8192
+fma_lat_cycles_per_iter,n=30,median=4.438,p95=4.438,min=4.437,max=4.438
+flush_mode=0
+fma_lat,I1=2048,I2=32768
+fma_lat_cycles_per_iter,n=30,median=4.438,p95=4.438,min=4.437,max=4.438
+flush_mode=0
+fma_indep,K=2,W=4,blocks=114,threads=128,I1=1024,I2=4096,cycles_at_1755MHz_from_events
+fma_indep_cycles_per_iter,n=30,median=5.155,p95=5.338,min=4.662,max=12.577
+fma_indep_ffma_per_cycle_per_sm,n=30,median=49.658,p95=54.067,min=20.354,max=54.915
+flush_mode=0
+fma_indep,K=2,W=32,blocks=114,threads=1024,I1=1024,I2=4096,cycles_at_1755MHz_from_events
+fma_indep_cycles_per_iter,n=30,median=18.391,p95=18.775,min=17.989,max=20.969
+fma_indep_ffma_per_cycle_per_sm,n=30,median=111.470,p95=112.704,min=97.670,max=113.849
+flush_mode=0
+fma_indep,K=8,W=4,blocks=114,threads=128,I1=1024,I2=4096,cycles_at_1755MHz_from_events
+fma_indep_cycles_per_iter,n=30,median=12.907,p95=13.217,min=12.486,max=13.327
+fma_indep_ffma_per_cycle_per_sm,n=30,median=79.565,p95=80.828,min=76.836,max=82.011
+flush_mode=0
+fma_indep,K=8,W=32,blocks=114,threads=1024,I1=1024,I2=4096,cycles_at_1755MHz_from_events
+fma_indep_cycles_per_iter,n=30,median=76.123,p95=76.361,min=75.794,max=76.489
+fma_indep_ffma_per_cycle_per_sm,n=30,median=107.641,p95=108.030,min=107.101,max=108.082

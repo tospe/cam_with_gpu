@@ -6,7 +6,9 @@
 //   calib lat_lanes [trace|hw] warps/block lanes/warp  same chains, different lanes per warp (investigation)
 //   calib lat_conc [trace|hw] [threads/block]  regression: 114 x threads concurrent chases (default 32), 1 GiB, cold L2
 //   calib clock              M4: sustained SM clock (hardware only)
-//   calib fma_lat [trace]    dependent FFMA chain, 1 thread: cycles per FMA (slope of 4096 vs 16384 iterations)
+//   calib fma_lat [trace|hw] [I1 I2]    dependent FFMA chain, 1 thread: cycles per FMA (default slope 4096 vs 16384)
+//   calib fma_indep [trace|hw] K W      K independent FFMA chains per thread, W warps per SM (114 blocks):
+//                                       cycles per loop iteration (slope 1024 vs 4096) and FFMA/cycle/SM
 // Without "trace": warm-up + repeated reps, prints median/p95 (hardware).
 // With "trace": each measured kernel once, same cache preparation (for NVBit).
 #include <algorithm>
@@ -246,8 +248,7 @@ __global__ void fma_chain(int iters, float seed, float* out, u64* cyc) {
   out[0] = x; cyc[0] = c1 - c0;
 }
 
-static void fma_lat(bool trace) {
-  const int I1 = 4096, I2 = 16384;
+static void fma_lat(bool trace, int I1 = 4096, int I2 = 16384) {
   float* out; u64* cyc; CK(cudaMalloc(&out, 4)); CK(cudaMalloc(&cyc, 8));
   auto run = [&](int it) { fma_chain<<<1, 1>>>(it, 1.f, out, cyc); CK(cudaDeviceSynchronize()); CK(cudaGetLastError());
                            u64 c; CK(cudaMemcpy(&c, cyc, 8, cudaMemcpyDeviceToHost)); return (double)c; };
@@ -255,7 +256,47 @@ static void fma_lat(bool trace) {
   for (int i = 0; i < 5; ++i) run(I1);
   std::vector<double> v;
   for (int i = 0; i < 30; ++i) { double a = run(I1), b = run(I2); v.push_back((b - a) / (I2 - I1)); }
+  printf("fma_lat,I1=%d,I2=%d\n", I1, I2);
   stats("fma_lat_cycles_per_iter", v);
+}
+
+// K independent dependent-chains per thread; each loop iteration issues K FFMAs.
+template <int K>
+__global__ void fma_indep_k(int iters, float* out) {
+  float x[K];
+#pragma unroll
+  for (int k = 0; k < K; ++k) x[k] = threadIdx.x + k;
+  for (int i = 0; i < iters; ++i) {
+#pragma unroll
+    for (int k = 0; k < K; ++k) x[k] = fmaf(x[k], 1.0001f, 0.25f);
+  }
+  float s = 0.f;
+#pragma unroll
+  for (int k = 0; k < K; ++k) s += x[k];
+  if (s == -1.f) out[blockIdx.x] = s;
+}
+
+static void fma_indep(bool trace, int K, int W) {
+  const int I1 = 1024, I2 = 4096, blocks = n_sms(), threads = 32 * W;
+  float* out; CK(cudaMalloc(&out, blocks * 4));
+  cudaEvent_t e0, e1; CK(cudaEventCreate(&e0)); CK(cudaEventCreate(&e1));
+  auto run = [&](int it) {
+    CK(cudaEventRecord(e0));
+    if (K == 2) fma_indep_k<2><<<blocks, threads>>>(it, out); else fma_indep_k<8><<<blocks, threads>>>(it, out);
+    CK(cudaEventRecord(e1)); CK(cudaEventSynchronize(e1)); CK(cudaGetLastError());
+    float ms; CK(cudaEventElapsedTime(&ms, e0, e1)); return (double)ms;
+  };
+  if (K != 2 && K != 8) { fprintf(stderr, "K must be 2 or 8\n"); exit(2); }
+  if (trace) { run(I1); run(I2); printf("fma_indep,trace,K=%d,W=%d,done\n", K, W); return; }
+  for (int i = 0; i < 5; ++i) { run(I1); run(I2); }
+  std::vector<double> cyc, thr;
+  for (int i = 0; i < 30; ++i) {
+    double a = run(I1), b = run(I2), c = (b - a) * 1e-3 * 1755e6 / (I2 - I1);
+    cyc.push_back(c); thr.push_back(32.0 * W * K / c);
+  }
+  printf("fma_indep,K=%d,W=%d,blocks=%d,threads=%d,I1=%d,I2=%d,cycles_at_1755MHz_from_events\n", K, W, blocks, threads, I1, I2);
+  stats("fma_indep_cycles_per_iter", cyc);
+  stats("fma_indep_ffma_per_cycle_per_sm", thr);
 }
 
 static void lat_hist() {
@@ -309,7 +350,8 @@ int main(int argc, char** argv) {
   else if (!strcmp(argv[1], "lat_conc")) lat_conc(trace, argc > 3 ? atoi(argv[3]) : 32);
   else if (!strcmp(argv[1], "lat_lanes")) lat_conc(trace, 0, atoi(argv[3]), atoi(argv[4]));
   else if (!strcmp(argv[1], "clock")) clock_rate();
-  else if (!strcmp(argv[1], "fma_lat")) fma_lat(trace);
+  else if (!strcmp(argv[1], "fma_lat")) fma_lat(trace, argc > 4 ? atoi(argv[3]) : 4096, argc > 4 ? atoi(argv[4]) : 16384);
+  else if (!strcmp(argv[1], "fma_indep")) fma_indep(trace, atoi(argv[3]), atoi(argv[4]));
   else if (!strcmp(argv[1], "lat_hist")) lat_hist();
   else { fprintf(stderr, "unknown mode\n"); return 2; }
   return 0;
