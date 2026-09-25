@@ -9,7 +9,7 @@ What the interval controls (our fork):
 - Each of the 4 SP units (one per sub-core) has a dispatch register; an instruction entering it gets
   cycles = initiation_interval (gpgpu-sim abstract_hardware_model.cc:64) and stays until dispatch_delay() counts it
   down (abstract_hardware_model.h:1683); can_issue() requires the register empty (shader.h:1539). => one warp
-  instruction (32 threads) per unit every  cycles; completion at dispatch + latency -
+  instruction (32 threads) per unit every initiation_interval cycles; completion at dispatch + latency -
   initiation_interval (shader.cc:2824).
 - Peak FFMA instruction throughput = 4 x 32 / interval per SM per cycle: 64 (interval 2) vs 128 (interval 1).
 Supporting documentation: CUDA C++ Programming Guide, arithmetic instruction throughput table, compute capability
