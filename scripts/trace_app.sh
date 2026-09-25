@@ -9,6 +9,9 @@
 # Env:   SPINLOCK_MODE (0 none, 1 fast_forward, 2 mark_region; default 2)
 #        REG_VALS (ALLOW_REG_VAL_TRACING, default 1)
 #        CUDA_VISIBLE_DEVICES is passed through.
+# The body is a function so bash parses it fully before running: editing this
+# file while a job runs cannot change what that job executes.
+main() {
 set -euo pipefail
 [ $# -ge 2 ] || { echo "usage: $0 <out_dir> <program> [args...]"; exit 2; }
 OUT="$(mkdir -p "$1" && cd "$1" && pwd)"; shift
@@ -45,3 +48,5 @@ rm -f "$OUT"/traces/*.trace "$OUT"/traces/*.trace.xz
   nvidia-smi --query-gpu=name,driver_version,clocks.max.sm,memory.used,utilization.gpu --format=csv,noheader | sed 's/^/gpu: /'
 } > "$OUT/trace_metadata.txt"
 echo "== done: $OUT/traces/kernelslist.g"
+}
+main "$@"; exit $?

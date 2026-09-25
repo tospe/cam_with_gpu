@@ -1,0 +1,7 @@
+date: 2026-09-25T11:32:00-04:00
+binary: microbenchmarks/hopper_validation/calib.cu, nvcc -O3 -arch=sm_90a -lineinfo
+nvcc: Build cuda_12.9.r12.9/compiler.36037853_0
+commands: ./calib clock; ./calib lat_l2; ./calib lat_dram; ./calib bw  (run 2026-09-25, in that order)
+gpu: NVIDIA H100 PCIe, 610.43.02, 1755 MHz, Enabled, Disabled
+co-tenancy: none (nvidia-smi 0% / 0 MiB before and after)
+cam_with_gpu commit (code not yet committed at run time; calib.cu committed with these results)

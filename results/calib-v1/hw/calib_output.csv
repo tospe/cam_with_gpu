@@ -1,0 +1,15 @@
+clock_light_load_MHz,n=1,median=1761.188,p95=1761.188,min=1761.188,max=1761.188
+clock_full_load_MHz,n=456,median=1754.989,p95=1754.994,min=1754.973,max=1754.995
+lat_l2,bytes=1048576,stride_B=128,H1=256,H2=1024
+lat_l2_cycles_per_hop,n=30,median=272.406,p95=272.461,min=272.303,max=272.484
+lat_l2_ns_per_hop,n=30,median=155.208,p95=155.250,min=155.167,max=155.333
+lat_l2_smids,110 
+lat_dram,bytes=268435456,stride_B=256,H1=256,H2=1024
+lat_dram_cycles_per_hop,n=30,median=657.952,p95=663.225,min=650.439,max=667.460
+lat_dram_ns_per_hop,n=30,median=374.917,p95=377.917,min=370.625,max=380.333
+lat_dram_smids,110 
+bw,grid=912,block=256,B1=134217728,B2=268435456
+bw_t128MiB_us,n=20,median=87.744,p95=90.592,min=87.264,max=91.200
+bw_t256MiB_us,n=20,median=156.608,p95=158.720,min=155.008,max=159.104
+bw_slope_GBps,n=20,median=1961.788,p95=2063.111,min=1868.287,max=2087.757
+bw_256MiB_GBps,n=20,median=1717.218,p95=1730.680,min=1687.170,max=1731.752

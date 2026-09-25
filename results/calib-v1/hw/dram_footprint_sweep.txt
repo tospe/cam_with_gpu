@@ -1,0 +1,8 @@
+8MiB: lat_dram_cycles_per_hop,n=30,median=659.014,p95=665.548,min=649.378,max=667.303
+16MiB: lat_dram_cycles_per_hop,n=30,median=658.251,p95=664.120,min=650.009,max=665.034
+32MiB: lat_dram_cycles_per_hop,n=30,median=658.923,p95=665.112,min=646.521,max=667.401
+64MiB: lat_dram_cycles_per_hop,n=30,median=658.243,p95=665.708,min=647.120,max=669.624
+128MiB: lat_dram_cycles_per_hop,n=30,median=659.637,p95=667.139,min=648.918,max=672.314
+256MiB: lat_dram_cycles_per_hop,n=30,median=656.482,p95=663.809,min=650.069,max=667.457
+1024MiB: lat_dram_cycles_per_hop,n=30,median=666.901,p95=672.828,min=657.030,max=678.146
+4096MiB: lat_dram_cycles_per_hop,n=30,median=669.393,p95=677.276,min=654.044,max=677.792

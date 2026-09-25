@@ -1,0 +1,8 @@
+GPGPU-Sim uArch: Shader 0 bind to kernel 1 '_Z5chasePKjjiPy'
+kernel_name = _Z5chasePKjjiPy 
+gpu_sim_cycle = 143922
+gpu_sim_insn = 615
+GPGPU-Sim uArch: Shader 1 bind to kernel 2 '_Z5chasePKjjiPy'
+kernel_name = _Z5chasePKjjiPy 
+gpu_sim_cycle = 568138
+gpu_sim_insn = 2343
