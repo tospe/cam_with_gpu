@@ -35,8 +35,8 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 ## Waiting on user
 
 - [x] Guides in `docs/` (2026-09-24): V100 placement (protocol, A–F), implementation (profiling baseline), H100 extension; files renamed `GUIDE_*`, root `guide_h100.md` duplicate removed
-- [ ] Decide CAM parameter strategy (proposal: all swept as hypothetical; see table note)
-- [ ] GPU dedicated (no co-tenant) before hardware timing runs
+- [x] CAM parameter strategy (2026-09-25): keep the old **cycle** counts (L = 200 etc.), in GPU core cycles; all hypothetical; sweep and report break-even points
+- [x] GPU dedicated (2026-09-25: user confirms; nvidia-smi idle, no processes)
 
 ## CAM parameters (from old `moecam` study, `util/moecam/DSA-PLACEMENT.md` §3)
 
@@ -60,3 +60,4 @@ Old values were in cycles at the V100-class 1.132 GHz clock. **User (2026-09-24)
 | 2026-09-23 | Reuse old `moecam` CAM code as a reviewed port | Patch is small and isolated; 2 semantic conflicts to resolve (audit §7) |
 | 2026-09-23 | Separate `*2` repos, `dev` = upstream mirror, work on `h100-cam` | Keep old repos intact; one fork per upstream per account |
 | 2026-09-23 | No Claude co-author trailers | User preference |
+| 2026-09-25 | CAM L/II/readout/fill specified in **GPU core cycles**, old values kept (L = 200) | User choice. On H100 PCIe (1755 MHz) L = 200 cycles = 114 ns vs 177 ns in the old V100-class study: this is a faster CAM than before, labeled as such (guide §3), not the same physical CAM. H100 config's L2/NoC clock is 2x core, so the CAM must not silently tick on the L2 clock (200 L2 cycles = 50 ns). External link delay stays in ns. |
