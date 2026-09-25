@@ -2,6 +2,20 @@
 
 Newest first. One entry per working session: what was done, what was executed vs only inspected, commits, and open issues.
 
+## 2026-09-25
+
+Decisions: CAM params in GPU core cycles (L = 200); GPU confirmed dedicated (idle in nvidia-smi).
+
+Executed:
+- `device_props.cu`: H100 PCIe = 114 SMs, 1755/1593 MHz, 5120-bit HBM2e, 50 MiB L2, 228 KiB smem/SM.
+- `SM90_H100_PCIe` config (3 changes vs SM90_H100: SM count, clocks, icnt k), both repos; smoke run `results/smoke-dep_chain-pciecfg/`.
+- Read the DRAM model source: simple DRAM model is active upstream; peak BW = n_mem x 32 B x DRAM clock.
+- Investigated chase speed-up on PCIe cfg with one-factor swaps: SM-placement x L2-partition x memcpy pre-fill effect (not the config values).
+
+Inspected only: upstream H200 config diff.
+
+Open: calibration (dram_latency, l2_rop_latency, sustained clock) needs hardware runs with warm-up; issuer placement must be controlled.
+
 ## 2026-09-24
 
 Executed:

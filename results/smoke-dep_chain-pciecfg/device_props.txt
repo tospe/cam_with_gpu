@@ -1,0 +1,20 @@
+name: NVIDIA H100 PCIe
+cc: 9.0
+sms: 114
+sm_clock_max_khz: 1755000
+mem_clock_max_khz: 1593000
+mem_bus_width_bits: 5120
+global_mem_bytes: 85009367040
+l2_bytes: 52428800
+persisting_l2_max_bytes: 32768000
+smem_per_sm_bytes: 233472
+smem_per_block_optin_bytes: 232448
+reserved_smem_per_block: 1024
+regs_per_sm: 65536
+max_threads_per_sm: 2048
+max_blocks_per_sm: 32
+warp_size: 32
+async_engines: 3
+cluster_launch: 1
+ecc: 1
+pci: 0000:3d:00

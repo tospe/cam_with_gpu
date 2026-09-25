@@ -59,7 +59,8 @@ Build notes:
 ## 6. Blocking risks
 
 1. ~~**Tracer crash.**~~ **Resolved 2026-09-23.** Not NVBit or the driver: NVBit's own `record_reg_vals` sample and `ALLOW_REG_VAL_TRACING=1` alone both work. The crash was `SPINLOCK_HANDLING_MODE` 1/2 without first running the spinlock detection phases: the tracer dereferenced a null `spinlock_instr_map` entry (`tracer_tool.cu`). Fixed to exit with a clear error (`accel-sim-framework2` `f2d5df6`); `scripts/trace_app.sh` always runs detection first. Residual risk: NVBit 1.8 still officially supports drivers ≤ 575 only (we run 610); re-check when tracing TMA/WGMMA/cluster kernels.
-2. **PCIe config** does not exist upstream (§3).
+2. ~~**PCIe config**~~ created: `SM90_H100_PCIe` (2026-09-25). Upstream facts found while deriving it: SM90_H100 and SM90_H200 configs are identical except `-gpgpu_n_mem` (40 vs 48), so H100 inherits H200's DRAM clock; `-gpgpu_simple_dram_model 1` means DRAM = fixed `dram_latency` (core cycles) + one 32 B request per DRAM cycle per channel, and `-gpgpu_dram_timing_opt` is unused; upstream H100 peak = 3.98 TB/s vs 3.35 TB/s real SXM.
+2b. **Placement sensitivity:** with 2 L2 partitions and memcpy L2 pre-fill, one warp's memory latency depends on which half its SM is in (see `results/smoke-dep_chain-pciecfg/metadata.md`).
 3. **Shared GPU**: user reports it will become dedicated; record co-tenancy in each hardware run until then.
 
 ## 7. Old CAM implementation (reuse assessment)
