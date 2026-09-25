@@ -1,0 +1,17 @@
+2026-09-25T15:33:43-04:00
+NVIDIA H100 PCIe, 610.43.02, 0 %, 0 MiB
+binary: pipeline.cu, nvcc -O3 -arch=sm_90a -lineinfo; cache state: data 29.2 MiB < L2, 5 warm-up launches (warm L2). Sim: -gpgpu_perf_sim_memcpy 1 pre-fills L2 on the input copy.
+cpasync,blocks=114,threads=256,tiles=64,tile_B=4096,slots=0,work=0,total_mismatches=0
+cpasync_kernel_us,n=30,median=20.448,p95=20.864,min=20.256,max=21.632
+cpasync,blocks=114,threads=256,tiles=64,tile_B=4096,slots=0,work=200,total_mismatches=0
+cpasync_kernel_us,n=30,median=47.552,p95=48.192,min=47.264,max=48.576
+tma,blocks=114,threads=160,tiles=64,tile_B=4096,slots=1,work=0,total_mismatches=0
+tma_kernel_us,n=30,median=26.176,p95=26.720,min=25.792,max=33.248
+tma,blocks=114,threads=160,tiles=64,tile_B=4096,slots=2,work=0,total_mismatches=0
+tma_kernel_us,n=30,median=20.160,p95=20.640,min=19.840,max=22.176
+tma,blocks=114,threads=160,tiles=64,tile_B=4096,slots=4,work=0,total_mismatches=0
+tma_kernel_us,n=30,median=20.128,p95=20.448,min=19.808,max=21.376
+tma,blocks=114,threads=160,tiles=64,tile_B=4096,slots=8,work=0,total_mismatches=0
+tma_kernel_us,n=30,median=20.064,p95=20.512,min=19.744,max=21.728
+tma,blocks=114,threads=160,tiles=64,tile_B=4096,slots=2,work=200,total_mismatches=0
+tma_kernel_us,n=30,median=56.480,p95=57.056,min=56.256,max=58.272

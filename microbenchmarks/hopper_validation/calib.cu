@@ -6,6 +6,7 @@
 //   calib lat_lanes [trace|hw] warps/block lanes/warp  same chains, different lanes per warp (investigation)
 //   calib lat_conc [trace|hw] [threads/block]  regression: 114 x threads concurrent chases (default 32), 1 GiB, cold L2
 //   calib clock              M4: sustained SM clock (hardware only)
+//   calib fma_lat [trace]    dependent FFMA chain, 1 thread: cycles per FMA (slope of 4096 vs 16384 iterations)
 // Without "trace": warm-up + repeated reps, prints median/p95 (hardware).
 // With "trace": each measured kernel once, same cache preparation (for NVBit).
 #include <algorithm>
@@ -71,6 +72,22 @@ __global__ void warm(const unsigned* __restrict__ a, size_t n, unsigned* sink) {
   if (acc == 0xdeadbeef) sink[blockIdx.x] = acc;
 }
 
+// Clean flush: stream-read a 256 MiB buffer so L2 ends up holding clean lines (dirty lines, e.g. from a memset,
+// are written back during the flush, not during the measured kernel).
+__global__ void flush_read(const float4* __restrict__ a, size_t n4, float* sink) {
+  float acc = 0.f;
+  for (size_t i = blockIdx.x * (size_t)blockDim.x + threadIdx.x; i < n4; i += (size_t)gridDim.x * blockDim.x) {
+    float4 v = __ldcg(a + i); acc += v.x + v.y + v.z + v.w;
+  }
+  if (acc == 1234.5f) sink[blockIdx.x] = acc;
+}
+static int g_flush_mode = 0;  // 0 = memset (dirty L2, original v1 procedure), 1 = clean read flush
+static void flush_l2(unsigned char* scratch, float* sink) {
+  CK(cudaMemset(scratch, 0, 256u << 20));
+  if (g_flush_mode == 1) { flush_read<<<912, 256>>>((const float4*)scratch, (256u << 20) / 16, sink); }
+  CK(cudaDeviceSynchronize());
+}
+
 __global__ void read_bw(const float4* __restrict__ a, size_t n4, float* sink) {
   float acc = 0.f;
   for (size_t i = blockIdx.x * (size_t)blockDim.x + threadIdx.x; i < n4; i += (size_t)gridDim.x * blockDim.x) {
@@ -121,7 +138,7 @@ static void latency(bool dram, bool trace, size_t dram_mib = 256, size_t dram_st
   if (dram && !trace) CK(cudaMalloc(&scratch, 256u << 20));
   unsigned start = 0;
   auto run = [&](int hops, u64 r[4]) {
-    if (scratch) CK(cudaMemset(scratch, 0, 256u << 20));
+    if (scratch) flush_l2(scratch, (float*)sink);
     if (!dram) warm<<<n_sms(), 256>>>(next, h.size(), sink);
     chase<<<1, 1>>>(next, start, hops, out);
     CK(cudaDeviceSynchronize()); CK(cudaGetLastError());
@@ -164,19 +181,32 @@ static void lat_conc(bool trace, int threads = 32, int warps_lanes = 0, int lane
   if (!trace) CK(cudaMalloc(&scratch, 256u << 20));
   cudaEvent_t e0, e1; CK(cudaEventCreate(&e0)); CK(cudaEventCreate(&e1));
   auto run = [&](int hops) {
-    if (scratch) CK(cudaMemset(scratch, 0, 256u << 20));
+    if (scratch) flush_l2(scratch, (float*)sink);
     CK(cudaEventRecord(e0));
     if (warps_lanes) chase_lanes<<<blocks, 32 * warps_lanes>>>(next, st, hops, lanes, sink);
     else chase_many<<<blocks, threads>>>(next, st, hops, sink);
     CK(cudaEventRecord(e1)); CK(cudaEventSynchronize(e1)); CK(cudaGetLastError());
     float ms; CK(cudaEventElapsedTime(&ms, e0, e1)); return (double)ms;
   };
-  if (trace) { run(H1); run(H2); printf("lat_conc,trace,done\n"); return; }
+  // Trace mode has no L2 flush between kernels, so the H2 kernel must not revisit the H1 kernel's lines:
+  // continue every chain from where H1 stopped (spacing nodes/T >= H1 + H2 keeps chains disjoint).
+  if (trace) {
+    if (nodes / T < (size_t)(H1 + H2)) { fprintf(stderr, "chains too dense for continuation\n"); exit(1); }
+    run(H1); CK(cudaMemcpy(st, sink, T * 4, cudaMemcpyDeviceToDevice)); run(H2);
+    printf("lat_conc,trace,continued,done\n"); return;
+  }
   for (int i = 0; i < 5; ++i) { run(H1); run(H2); }
-  std::vector<double> cyc;
-  for (int i = 0; i < 30; ++i) { double a = run(H1), b = run(H2); cyc.push_back((b - a) * 1e-3 * 1755e6 / (H2 - H1)); }
+  std::vector<double> cyc, el, lps;
+  for (int i = 0; i < 30; ++i) {
+    double a = run(H1), b = run(H2);
+    cyc.push_back((b - a) * 1e-3 * 1755e6 / (H2 - H1));
+    el.push_back(b * 1e3);                                   // H2 kernel elapsed, us
+    lps.push_back((double)T * (H2 - H1) / ((b - a) * 1e-3));  // completed loads/s (slope)
+  }
   printf("lat_conc,chains=%d,warps_per_block=%d,lanes_per_warp=%d,bytes=%zu,H1=%d,H2=%d,cycles_at_1755MHz_from_events\n", T, warps_lanes ? warps_lanes : threads / 32, warps_lanes ? lanes : threads, bytes, H1, H2);
   stats("lat_conc_cycles_per_hop", cyc);
+  stats("lat_conc_elapsed_H2_us", el);
+  stats("lat_conc_loads_per_s", lps);
 }
 
 static void bandwidth(bool trace) {
@@ -187,7 +217,7 @@ static void bandwidth(bool trace) {
   const int grid = n_sms() * 8;
   cudaEvent_t e0, e1; CK(cudaEventCreate(&e0)); CK(cudaEventCreate(&e1));
   auto run = [&](float4* a, size_t bytes) {
-    if (scratch) CK(cudaMemset(scratch, 0, 256u << 20));
+    if (scratch) flush_l2(scratch, sink);
     CK(cudaEventRecord(e0));
     read_bw<<<grid, 256>>>(a, bytes / 16, sink);
     CK(cudaEventRecord(e1)); CK(cudaEventSynchronize(e1)); CK(cudaGetLastError());
@@ -207,6 +237,27 @@ static void bandwidth(bool trace) {
   stats("bw_slope_GBps", bw_slope); stats("bw_256MiB_GBps", bw_256);
 }
 
+// Same busy loop shape as pipeline.cu busy(): dependent fmaf chain.
+__global__ void fma_chain(int iters, float seed, float* out, u64* cyc) {
+  float x = seed;
+  u64 c0 = clock64();
+  for (int i = 0; i < iters; ++i) x = fmaf(x, 1.0001f, 0.25f);
+  u64 c1 = clock64();
+  out[0] = x; cyc[0] = c1 - c0;
+}
+
+static void fma_lat(bool trace) {
+  const int I1 = 4096, I2 = 16384;
+  float* out; u64* cyc; CK(cudaMalloc(&out, 4)); CK(cudaMalloc(&cyc, 8));
+  auto run = [&](int it) { fma_chain<<<1, 1>>>(it, 1.f, out, cyc); CK(cudaDeviceSynchronize()); CK(cudaGetLastError());
+                           u64 c; CK(cudaMemcpy(&c, cyc, 8, cudaMemcpyDeviceToHost)); return (double)c; };
+  if (trace) { run(I1); run(I2); printf("fma_lat,trace,done\n"); return; }
+  for (int i = 0; i < 5; ++i) run(I1);
+  std::vector<double> v;
+  for (int i = 0; i < 30; ++i) { double a = run(I1), b = run(I2); v.push_back((b - a) / (I2 - I1)); }
+  stats("fma_lat_cycles_per_iter", v);
+}
+
 static void lat_hist() {
   const size_t nodes = (256u << 20) / 256, stride_el = 64; const int hops = 4096;
   std::vector<unsigned> h = make_list(nodes, stride_el, 1);
@@ -215,7 +266,7 @@ static void lat_hist() {
   CK(cudaMemcpy(next, h.data(), h.size() * 4, cudaMemcpyHostToDevice));
   std::vector<double> all; std::vector<unsigned> hl(hops); unsigned start = 0;
   for (int r = 0; r < 10; ++r) {
-    CK(cudaMemset(scratch, 0, 256u << 20));
+    flush_l2(scratch, (float*)lat);
     chase_hist<<<1, 1>>>(next, start, hops, 0u, lat); CK(cudaDeviceSynchronize()); CK(cudaGetLastError());
     CK(cudaMemcpy(hl.data(), lat, hops * 4, cudaMemcpyDeviceToHost));
     for (unsigned v : hl) all.push_back(v);
@@ -248,6 +299,8 @@ static void clock_rate() {
 int main(int argc, char** argv) {
   if (argc < 2) { fprintf(stderr, "usage: calib lat_l2|lat_dram|bw|clock [trace]\n"); return 2; }
   bool trace = argc > 2 && !strcmp(argv[2], "trace");
+  if (getenv("CLEAN_FLUSH")) g_flush_mode = atoi(getenv("CLEAN_FLUSH"));
+  fprintf(stderr, "flush_mode=%d\n", g_flush_mode);
   if (!strcmp(argv[1], "lat_l2")) latency(false, trace);
   else if (!strcmp(argv[1], "lat_dram"))
     latency(true, trace, argc > 3 ? (size_t)atoi(argv[3]) : 256, argc > 4 ? (size_t)atoi(argv[4]) : 256,
@@ -256,6 +309,7 @@ int main(int argc, char** argv) {
   else if (!strcmp(argv[1], "lat_conc")) lat_conc(trace, argc > 3 ? atoi(argv[3]) : 32);
   else if (!strcmp(argv[1], "lat_lanes")) lat_conc(trace, 0, atoi(argv[3]), atoi(argv[4]));
   else if (!strcmp(argv[1], "clock")) clock_rate();
+  else if (!strcmp(argv[1], "fma_lat")) fma_lat(trace);
   else if (!strcmp(argv[1], "lat_hist")) lat_hist();
   else { fprintf(stderr, "unknown mode\n"); return 2; }
   return 0;

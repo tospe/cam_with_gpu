@@ -1,0 +1,1 @@
+Superseded 2026-09-25: trace-mode H2 kernel restarted chains at the H1 starts with no flush, so small-chain cases partly hit L2 (0.75 DRAM reads/hop). Fixed in calib.cu (continue chains). 16x2 and 32x1 runs were stopped before finishing.

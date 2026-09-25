@@ -20,7 +20,7 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 - [x] `SM90_H100_PCIe` config (gpgpu-sim `fa2f6f39`, accel-sim `a238d6a`); changed params classified in its header; rest inherited/uncalibrated
 - [x] Calibration microbenchmarks + HW timing (`calib.cu`, `results/calib-v1`, `results/calib-fit/REPORT.md`)
 - [x] DRAM model decision (2026-09-25, user: option C, restricted scope): development config **`SM90_H100_PCIe_dev`** = simple DRAM model + `dram_latency 283`. Baseline `SM90_H100_PCIe` kept.
-- [ ] Validation kernels: async copy, repeated barrier phases, buffer reuse, producer/consumer (required before CAM port)
+- [~] Validation kernels (`results/validation/REPORT.md`): async copy (cp.async), TMA bulk, repeated mbarrier phases, buffer reuse, producer/consumer — **functional + structural PASS** (0 mismatches HW/trace, progress, exact DRAM traffic, ordering enforced); **timing**: TMA ring −0.4..−14 % ✓, cp.async −19 %/+27 % ✗, dependent FMA latency **+57.7 % ✗** (sim 7.0 vs HW 4.44 cycles)
 - [ ] Random-access diagnosis: sweep active lanes and resident warps separately (elapsed, loads/s, transactions, outstanding); lanes hypothesis unconfirmed until then
 - [x] Bounded audit of detailed DRAM model bandwidth (`docs/detailed_dram_bw_audit.md`): binding limit tCCDL + bank-group interleave (observed 0.90 TB/s; ceilings 2.04 / 1.36 / 1.02 TB/s); structure models 40 of 80 HBM2e pseudo-channels. No parameters changed.
 - [ ] Before H2: ordinary-memory workload shaped like the CAM interface (query prep, contiguous transfers, completion sync, consumption), swept over concurrency and buffer depth with competing traffic

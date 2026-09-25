@@ -16,3 +16,4 @@ microbenchmarks/hopper_validation/dep_chain
 reference/
 microbenchmarks/hopper_validation/device_props
 microbenchmarks/hopper_validation/calib
+microbenchmarks/hopper_validation/pipeline

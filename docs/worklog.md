@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session: what was done, what was executed vs only inspected, commits, and open issues.
 
+## 2026-09-25 (option C, restricted scope)
+
+- `SM90_H100_PCIe_dev` created (both repos), verified to reproduce the fit run exactly.
+- Detailed-DRAM bandwidth audit (`docs/detailed_dram_bw_audit.md`): binding limit tCCDL/bank-group interleave; models 40 of 80 pseudo-channels. No changes.
+- Random access: HW grid lanes x warps (`results/rand-access/hw_grid.csv`). At fixed outstanding, latency rises with lanes/warp (3648 chains: 764 -> 1106); warps with 1 lane barely matter; saturation ~16.2 G random loads/s. Lanes effect exceeds the max-of-N prediction by 100-190 cycles -> hypothesis NOT confirmed. No HW counters (ncu unavailable, profiling admin-only).
+- Validation kernels (`pipeline.cu`): functional/structural pass; timing partially; dependent FMA +57.7 % found.
+- My errors: memset-only cold flush (dirty L2; superseded, calibration re-checked unaffected); lanes trace mode restarted chains without flush (small-chain sims invalid, superseded, fixed by continuing chains); a pkill pattern killed its own shell (no data lost).
+
 ## 2026-09-25 (calibration)
 
 User's 6-step fit procedure followed; full account in `results/calib-fit/REPORT.md`.

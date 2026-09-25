@@ -1,0 +1,15 @@
+2026-09-25T15:43:49-04:00
+cpasync,cold,blocks=114,threads=256,tiles=64,tile_B=4096,slots=0,work=0,total_mismatches=0
+cpasync_kernel_us,n=30,median=43.264,p95=43.744,min=42.272,max=43.968
+cpasync,cold,blocks=114,threads=256,tiles=64,tile_B=4096,slots=0,work=200,total_mismatches=0
+cpasync_kernel_us,n=30,median=48.480,p95=49.024,min=47.904,max=49.248
+tma,cold,blocks=114,threads=160,tiles=64,tile_B=4096,slots=1,work=0,total_mismatches=0
+tma_kernel_us,n=30,median=48.576,p95=49.024,min=47.584,max=49.504
+tma,cold,blocks=114,threads=160,tiles=64,tile_B=4096,slots=2,work=0,total_mismatches=0
+tma_kernel_us,n=30,median=29.440,p95=30.272,min=28.896,max=40.288
+tma,cold,blocks=114,threads=160,tiles=64,tile_B=4096,slots=4,work=0,total_mismatches=0
+tma_kernel_us,n=30,median=22.752,p95=23.232,min=22.048,max=23.904
+tma,cold,blocks=114,threads=160,tiles=64,tile_B=4096,slots=8,work=0,total_mismatches=0
+tma_kernel_us,n=30,median=21.792,p95=22.272,min=21.536,max=22.784
+tma,cold,blocks=114,threads=160,tiles=64,tile_B=4096,slots=2,work=200,total_mismatches=0
+tma_kernel_us,n=30,median=57.440,p95=57.824,min=56.992,max=58.432

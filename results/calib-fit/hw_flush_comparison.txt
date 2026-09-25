@@ -1,0 +1,36 @@
+2026-09-25T15:43:29-04:00
+0 %, 0 MiB
+## CLEAN_FLUSH=0
+flush_mode=0
+lat_dram,bytes=268435456,stride_B=256,seed=1,H1=256,H2=1024
+lat_dram_cycles_per_hop,n=30,median=661.523,p95=666.423,min=656.419,max=670.206
+lat_dram_ns_per_hop,n=30,median=373.708,p95=376.583,min=370.875,max=378.667
+lat_dram_smids,110 
+flush_mode=0
+bw,grid=912,block=256,B1=134217728,B2=268435456
+bw_t128MiB_us,n=20,median=88.352,p95=89.088,min=87.744,max=89.280
+bw_t256MiB_us,n=20,median=155.808,p95=158.240,min=154.784,max=158.752
+bw_slope_GBps,n=20,median=1986.880,p95=2019.405,min=1903.905,max=2033.109
+bw_256MiB_GBps,n=20,median=1723.215,p95=1733.900,min=1690.911,max=1734.258
+flush_mode=0
+lat_conc,chains=3648,warps_per_block=1,lanes_per_warp=32,bytes=1073741824,H1=128,H2=512,cycles_at_1755MHz_from_events
+lat_conc_cycles_per_hop,n=30,median=1106.674,p95=1112.231,min=1100.239,max=1113.694
+lat_conc_elapsed_H2_us,n=30,median=345.504,p95=346.560,min=343.872,max=347.040
+lat_conc_loads_per_s,n=30,median=5785884318.856,p95=5797378018.822,min=5748654316.757,max=5818955018.152
+## CLEAN_FLUSH=1
+flush_mode=1
+lat_dram,bytes=268435456,stride_B=256,seed=1,H1=256,H2=1024
+lat_dram_cycles_per_hop,n=30,median=661.208,p95=665.113,min=654.191,max=668.315
+lat_dram_ns_per_hop,n=30,median=373.542,p95=375.792,min=369.667,max=377.708
+lat_dram_smids,110 
+flush_mode=1
+bw,grid=912,block=256,B1=134217728,B2=268435456
+bw_t128MiB_us,n=20,median=75.936,p95=77.152,min=72.928,max=77.280
+bw_t256MiB_us,n=20,median=146.880,p95=149.024,min=145.280,max=149.920
+bw_slope_GBps,n=20,median=1903.042,p95=1939.114,min=1789.379,max=1948.121
+bw_256MiB_GBps,n=20,median=1829.576,p95=1847.304,min=1790.525,max=1847.711
+flush_mode=1
+lat_conc,chains=3648,warps_per_block=1,lanes_per_warp=32,bytes=1073741824,H1=128,H2=512,cycles_at_1755MHz_from_events
+lat_conc_cycles_per_hop,n=30,median=1104.480,p95=1109.014,min=1071.574,max=1110.915
+lat_conc_elapsed_H2_us,n=30,median=327.680,p95=328.640,min=326.432,max=329.504
+lat_conc_loads_per_s,n=30,median=5801987757.944,p95=5849278504.984,min=5763032924.590,max=5974614511.469
