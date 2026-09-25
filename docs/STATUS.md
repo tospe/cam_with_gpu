@@ -22,7 +22,7 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 - [x] DRAM model decision (2026-09-25, user: option C, restricted scope): development config **`SM90_H100_PCIe_dev`** = simple DRAM model + `dram_latency 283`. Baseline `SM90_H100_PCIe` kept.
 - [ ] Validation kernels: async copy, repeated barrier phases, buffer reuse, producer/consumer (required before CAM port)
 - [ ] Random-access diagnosis: sweep active lanes and resident warps separately (elapsed, loads/s, transactions, outstanding); lanes hypothesis unconfirmed until then
-- [ ] Bounded audit of detailed DRAM model bandwidth config (channels, bus width, clocks, DDR, burst, request size) -> implied ceiling, before any timing change
+- [x] Bounded audit of detailed DRAM model bandwidth (`docs/detailed_dram_bw_audit.md`): binding limit tCCDL + bank-group interleave (observed 0.90 TB/s; ceilings 2.04 / 1.36 / 1.02 TB/s); structure models 40 of 80 HBM2e pseudo-channels. No parameters changed.
 - [ ] Before H2: ordinary-memory workload shaped like the CAM interface (query prep, contiguous transfers, completion sync, consumption), swept over concurrency and buffer depth with competing traffic
 - [ ] Control issuer SM / L2 partition and cache state (memcpy pre-fill) in tests — see `results/smoke-dep_chain-pciecfg/metadata.md`
 - [ ] Validation kernels (guide §5): shared-mem producer/consumer, async copy, barrier phases, warp-specialized pipeline
