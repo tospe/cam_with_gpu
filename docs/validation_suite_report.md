@@ -19,7 +19,7 @@ Sensitivity on the fit case (1 thread, slope 4096 vs 16384): with initiation 2, 
 | R2 K=2 W=4, latency-bound (cycles/iter) | 5.155 (5.338) | 7.38 +43.1 % ✗ | 6.44 **+24.9 % ✗** | 5.44 +5.5 % ✓ |
 | R2 K=2 W=32 (throughput) | 18.391 (18.775) | 32.50 +76.7 % ✗ | 32.50 **+76.7 % ✗** | 18.00 −2.1 % ✓ |
 | R2 K=8 W=4 | 12.907 (13.217) | 17.75 +37.5 % ✗ | 17.75 **+37.5 % ✗** | 10.50 −18.6 % ✗ |
-| R2 K=8 W=32 (throughput) | 76.123 (76.361) | pending | pending | 72.00 −5.4 % ✓ |
+| R2 K=8 W=32 (throughput) | 76.123 (76.361) | 130.00 +70.8% ✗ | **130.00 +70.8% ✗** | 72.00 −5.4 % ✓ |
 | R3 arithmetic ring (TMA, 2 slots, work 200, cold, µs) | 57.44 | 67.12 +16.8 % ✗ | 59.69 **+3.9 % ✓** | 52.37 −8.8 % ✓ |
 
 Dependency latency and throughput are separated as follows.
