@@ -19,7 +19,11 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 - [x] Tracer crash: spinlock mode without detection data, fixed `f2d5df6`; use `scripts/trace_app.sh`
 - [x] `SM90_H100_PCIe` config (gpgpu-sim `fa2f6f39`, accel-sim `a238d6a`); changed params classified in its header; rest inherited/uncalibrated
 - [x] Calibration microbenchmarks + HW timing (`calib.cu`, `results/calib-v1`, `results/calib-fit/REPORT.md`)
-- [ ] **Decide DRAM model** (simple+283 passes all but concurrency; detailed passes latency+concurrency, fails BW) — user decision
+- [x] DRAM model decision (2026-09-25, user: option C, restricted scope): development config **`SM90_H100_PCIe_dev`** = simple DRAM model + `dram_latency 283`. Baseline `SM90_H100_PCIe` kept.
+- [ ] Validation kernels: async copy, repeated barrier phases, buffer reuse, producer/consumer (required before CAM port)
+- [ ] Random-access diagnosis: sweep active lanes and resident warps separately (elapsed, loads/s, transactions, outstanding); lanes hypothesis unconfirmed until then
+- [ ] Bounded audit of detailed DRAM model bandwidth config (channels, bus width, clocks, DDR, burst, request size) -> implied ceiling, before any timing change
+- [ ] Before H2: ordinary-memory workload shaped like the CAM interface (query prep, contiguous transfers, completion sync, consumption), swept over concurrency and buffer depth with competing traffic
 - [ ] Control issuer SM / L2 partition and cache state (memcpy pre-fill) in tests — see `results/smoke-dep_chain-pciecfg/metadata.md`
 - [ ] Validation kernels (guide §5): shared-mem producer/consumer, async copy, barrier phases, warp-specialized pipeline
 - [ ] `docs/hopper_feature_coverage.md`
@@ -30,9 +34,13 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 | Repo | Branch | Commit |
 |---|---|---|
 | cam_with_gpu | main | see `git log` |
-| accel-sim-framework2 | h100-cam | `a238d6a` (upstream `d930ad6` + tracer fix + PCIe trace.config) |
-| gpgpu-sim_distribution2 | h100-cam | `b1ec7f13` (upstream `91880c5` + PCIe config + false-deadlock fix) |
+| accel-sim-framework2 | h100-cam | see submodule (upstream `d930ad6` + tracer fix + PCIe trace.configs) |
+| gpgpu-sim_distribution2 | h100-cam | see submodule (upstream `91880c5` + PCIe configs + false-deadlock fix) |
 | NVBit | release | v1.8 |
+
+## Standing restrictions
+
+- `SM90_H100_PCIe_dev` fails the concurrent random-access check (−31.7 %). No claims about scattered gathers, memory-tail latency or contention that it fails to reproduce until the detailed DRAM model is calibrated (user, 2026-09-25).
 
 ## Waiting on user
 
@@ -62,4 +70,5 @@ Old values were in cycles at the V100-class 1.132 GHz clock. **User (2026-09-24)
 | 2026-09-23 | Reuse old `moecam` CAM code as a reviewed port | Patch is small and isolated; 2 semantic conflicts to resolve (audit §7) |
 | 2026-09-23 | Separate `*2` repos, `dev` = upstream mirror, work on `h100-cam` | Keep old repos intact; one fork per upstream per account |
 | 2026-09-23 | No Claude co-author trailers | User preference |
+| 2026-09-25 | DRAM model: option C — develop on simple model + dram_latency 283 (`SM90_H100_PCIe_dev`), calibrate detailed model only if needed | Passes latency/held-out/BW; fails concurrency (no per-access variance); detailed model fails BW (−57.5 %) |
 | 2026-09-25 | CAM L/II/readout/fill specified in **GPU core cycles**, old values kept (L = 200) | User choice. On H100 PCIe (1755 MHz) L = 200 cycles = 114 ns vs 177 ns in the old V100-class study: this is a faster CAM than before, labeled as such (guide §3), not the same physical CAM. H100 config's L2/NoC clock is 2x core, so the CAM must not silently tick on the L2 clock (200 L2 cycles = 50 ns). External link delay stays in ns. |
