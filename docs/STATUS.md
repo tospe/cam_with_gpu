@@ -24,7 +24,7 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 - [x] Random-access diagnosis (`results/rand-access/`): lanes and warps swept separately on HW (36 points) and sim (8). Lanes effect real at fixed outstanding; sim (no variance) still shows ~1/3 of it -> **slowest-lane dominance NOT supported**; remains a hypothesis for the rest
 - [x] Bounded audit of detailed DRAM model bandwidth (`docs/detailed_dram_bw_audit.md`): binding limit tCCDL + bank-group interleave (observed 0.90 TB/s; ceilings 2.04 / 1.36 / 1.02 TB/s); structure models 40 of 80 HBM2e pseudo-channels. No parameters changed.
 - [~] Bounded validation suite (`docs/validation_suite_report.md`, 2026-09-25): arithmetic fit frozen (sp 3,2) but fails band (+35 % dependent, −43.5 % FP32 throughput; cause: pipeline overhead + initiation interval 2 vs documented 128 FP32/SM); memory/sync checks retained; TMA stand-in schedules A/C/E: total + interval 28/28 pass, first-result 14/14 FAIL, overlap benefit (C vs A) materially overstated
-- [ ] Decide: adopt documented SP initiation interval 1 (investigation passes 6/7 arithmetic) -> new freeze + fresh reserved cases
+- [x] Evaluated SP 3,1 (documented 128 FP32/SM/clk) with fresh cases (`results/arith-ii1/`): throughput cases PASS; dependency-limited FAIL (+34.5 %/+35.2 %), K8W4 FAIL (−18.6 %). **Not adopted**; combined workloads not rerun; decision pending (options in validation report addendum)
 - [ ] Competing memory traffic in the CAM-shaped workload (not yet added)
 - [ ] Control issuer SM / L2 partition and cache state (memcpy pre-fill) in tests — see `results/smoke-dep_chain-pciecfg/metadata.md`
 - [ ] Validation kernels (guide §5): shared-mem producer/consumer, async copy, barrier phases, warp-specialized pipeline

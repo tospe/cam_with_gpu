@@ -282,11 +282,17 @@ static void fma_indep(bool trace, int K, int W) {
   cudaEvent_t e0, e1; CK(cudaEventCreate(&e0)); CK(cudaEventCreate(&e1));
   auto run = [&](int it) {
     CK(cudaEventRecord(e0));
-    if (K == 2) fma_indep_k<2><<<blocks, threads>>>(it, out); else fma_indep_k<8><<<blocks, threads>>>(it, out);
+    switch (K) {
+      case 1: fma_indep_k<1><<<blocks, threads>>>(it, out); break;
+      case 2: fma_indep_k<2><<<blocks, threads>>>(it, out); break;
+      case 4: fma_indep_k<4><<<blocks, threads>>>(it, out); break;
+      case 8: fma_indep_k<8><<<blocks, threads>>>(it, out); break;
+      default: fma_indep_k<16><<<blocks, threads>>>(it, out); break;
+    }
     CK(cudaEventRecord(e1)); CK(cudaEventSynchronize(e1)); CK(cudaGetLastError());
     float ms; CK(cudaEventElapsedTime(&ms, e0, e1)); return (double)ms;
   };
-  if (K != 2 && K != 8) { fprintf(stderr, "K must be 2 or 8\n"); exit(2); }
+  if (K != 1 && K != 2 && K != 4 && K != 8 && K != 16) { fprintf(stderr, "K must be 1, 2, 4, 8 or 16\n"); exit(2); }
   if (trace) { run(I1); run(I2); printf("fma_indep,trace,K=%d,W=%d,done\n", K, W); return; }
   for (int i = 0; i < 5; ++i) { run(I1); run(I2); }
   std::vector<double> cyc, thr;

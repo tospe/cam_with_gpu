@@ -101,3 +101,42 @@ Investigation sp 2,1 (`comparison_inv21.md`): 3 total/interval values move just 
 ## Incidents in this suite
 
 None that invalidated results. The xferlat measurement runs without an L2 flush; it was used only to choose W and to compare the first query with later ones.
+
+---
+
+# Addendum (same day): FP32 issue-interval candidate `-trace_opcode_latency_initiation_sp 3,1`
+
+Instructions followed: SP latency kept at 3; unit counts, pipeline widths and memory unchanged; frozen before fresh cases (`results/arith-ii1/FROZEN.md`, commits `d644195`, `fe29db9`); no further fitting. Convention: throughput = FFMA instructions per thread per cycle per SM; 1 FFMA = 2 FLOP.
+
+**What the interval controls**: each of the 4 SP units (one per sub-core) holds a dispatched warp instruction for `initiation_interval` cycles (`abstract_hardware_model.cc:64`, `.h:1683`; `can_issue` needs an empty dispatch register, `shader.h:1539`). So the peak is 4 × 32 / interval FFMA/cycle/SM: 64 at interval 2, 128 at interval 1. This matches the documented rate of 128 FP32 FMA results/clock/SM for cc 9.0 in the CUDA Programming Guide throughput table, and 128 FP32 cores/SM in the H100 architecture description. It is a model parameter consistent with that rate, **not** a measurement of a physical pipeline.
+
+| Set | Case | HW cycles/iter (FFMA/cyc/SM) | Sim 3,1 | Error | Verdict |
+|---|---|---|---|---|---|
+| fresh | F1 K=1 W=2 (dependency-limited) | 4.461 (14.3) | 6.000 (10.7) | +34.5 % | **FAIL** |
+| fresh | F2 K=4 W=8 (intended intermediate; HW is near saturation, 108.8) | 9.415 (108.8) | 8.625 (118.7) | −8.4 % | PASS |
+| fresh | F3 K=16 W=16 (saturated) | 70.109 (116.8) | 68.000 (120.5) | −3.0 % | PASS |
+| regr | R1 chains (4096/16384, 1024/8192, 2048/32768) | 4.438 | 6.000 | +35.2 % | **FAIL** |
+| regr | R2 K2 W4 | 5.155 (49.7) | 6.375 (40.2) | +23.7 % | **FAIL** |
+| regr | R2 K2 W32 (was −43.5 % throughput) | 18.391 (111.4) | 18.000 (113.8) | −2.1 % | PASS |
+| regr | R2 K8 W4 | 12.907 (79.3) | 10.500 (97.5) | −18.6 % | **FAIL** |
+| regr | R2 K8 W32 (was +70.8 %) | 76.123 (107.6) | 72.000 (113.8) | −5.4 % | PASS |
+| regr | R3 arithmetic ring, cold (µs) | 57.44 | 59.69 | +3.9 % | PASS |
+
+**Outcome: required arithmetic cases still fail.** Per the instructions, the candidate is **not adopted** into `SM90_H100_PCIe_dev`, the combined workloads (step 3) were **not rerun**, and transfer instrumentation (step 4, conditional on step 3) was **not added**.
+
+## Remaining discrepancies
+
+1. **Dependent FFMA latency (+34.5 % / +35.2 %; +23.7 % with 2 chains).** The sim charges max(latency + 3, interval + 4) cycles per dependent FFMA. At latency 3 that is 6.0 against HW 4.44. The ~3-cycle constant is the modelled issue → operand collection → execute → writeback → scoreboard release path. The interval change cannot reach it. Closing it needs either a latency change (latency ≤ 2 gives 5.0 = +12.7 %, predicted from the earlier sensitivity data, not validated) with a new freeze and fresh cases, or a structural change to the dependency path.
+2. **Single-warp issue rate (K8 W4, −18.6 %; sim faster).** With one warp per scheduler and 8 independent FFMAs, HW takes 12.9 cycles per 8-FFMA iteration (~1.6 cycles per FFMA per warp); the sim issues one per cycle. HW causes (e.g. register-bank or operand-reuse limits) are not identified; there is no HW counter access here.
+
+## Effect on the planned claims
+
+- **Throughput-bound GPU compute** (many warps / high ILP, e.g. a saturated GPU scoring baseline): **supported** with interval 1. This is also where the old interval 2 was badly wrong (−43.5 % throughput).
+- **Independent work in the A/C/E schedules** is a dependent chain run by 4 warps per SM (one per scheduler), i.e. exactly the failing dependency-limited regime. Its simulated duration stays ~35 % too long. So the overlap-benefit and specialization-benefit sizes remain **not supported**, whether or not the candidate is adopted. First-result latency is also still not supported.
+- Steady-state completion intervals and schedule rankings: unchanged from the main report (supported with sp 3,2). Not re-evaluated with 3,1.
+
+## Options (not implemented; for decision)
+
+a. Evaluate latency 2 with interval 1 (predicted +12.7 % on chains) as a new frozen candidate with fresh cases. This leaves K8 W4 open.
+b. Make the benchmark's independent work a regime that validates (e.g. several independent chains per thread), or specify work budgets in measured time on both platforms rather than as iteration counts.
+c. Keep the current restriction: no claims about overlap size until (1) is resolved.
