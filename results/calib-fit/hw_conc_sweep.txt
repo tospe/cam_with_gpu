@@ -1,0 +1,6 @@
+chains=114: lat_conc_cycles_per_hop,n=30,median=698.782,p95=705.949,min=686.351,max=715.309
+chains=456: lat_conc_cycles_per_hop,n=30,median=893.002,p95=901.339,min=885.251,max=906.165
+chains=912: lat_conc_cycles_per_hop,n=30,median=982.361,p95=987.626,min=975.634,max=990.990
+chains=1824: lat_conc_cycles_per_hop,n=30,median=1006.054,p95=1015.560,min=997.717,max=1021.117
+chains=3648: lat_conc_cycles_per_hop,n=30,median=1110.769,p95=1113.694,min=1101.848,max=1117.204
+chains=7296: lat_conc_cycles_per_hop,n=30,median=1264.916,p95=1270.766,min=1256.288,max=1271.059

@@ -1,0 +1,21 @@
+2026-09-25T12:17:00-04:00
+0 %, 0 MiB
+# H1 footprint
+lat_dram,bytes=1073741824,stride_B=256,seed=1,H1=256,H2=1024
+lat_dram_cycles_per_hop,n=30,median=665.033,p95=670.521,min=654.156,max=672.505
+lat_dram_ns_per_hop,n=30,median=379.000,p95=382.083,min=372.750,max=383.167
+lat_dram_smids,110 
+# H2 stride
+lat_dram,bytes=268435456,stride_B=128,seed=1,H1=256,H2=1024
+lat_dram_cycles_per_hop,n=30,median=658.500,p95=667.138,min=649.914,max=668.491
+lat_dram_ns_per_hop,n=30,median=375.208,p95=380.167,min=370.333,max=380.875
+lat_dram_smids,110 
+# H3 seed
+lat_dram,bytes=268435456,stride_B=256,seed=2,H1=256,H2=1024
+lat_dram_cycles_per_hop,n=30,median=660.677,p95=666.728,min=650.947,max=671.816
+lat_dram_ns_per_hop,n=30,median=376.458,p95=379.875,min=370.917,max=382.792
+lat_dram_smids,110 
+# concurrency
+lat_conc,chains=3648,bytes=1073741824,H1=128,H2=512,cycles_at_1755MHz_from_events
+lat_conc_cycles_per_hop,n=30,median=1108.575,p95=1112.816,min=1103.749,max=1118.520
+41 %, 0 MiB

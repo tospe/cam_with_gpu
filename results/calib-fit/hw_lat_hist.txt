@@ -1,0 +1,5 @@
+lat_hist,samples=40960,mean=687.5,p1=553,p10=567,p50=715,p90=791,p99=1038,max=1524
+lat_hist,approx_E_max_of_1=715
+lat_hist,approx_E_max_of_4=775
+lat_hist,approx_E_max_of_8=789
+lat_hist,approx_E_max_of_32=915

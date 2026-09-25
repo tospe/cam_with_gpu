@@ -1,0 +1,5 @@
+chains=912 warps/blk=8 lanes/warp=1 median=780.536 p95=784.924
+chains=912 warps/blk=1 lanes/warp=8 median=982.654 p95=988.065
+chains=3648 warps/blk=32 lanes/warp=1 median=761.524 p95=765.765
+chains=3648 warps/blk=4 lanes/warp=8 median=954.866 p95=960.570
+chains=3648 warps/blk=1 lanes/warp=32 median=1107.112 p95=1111.500
