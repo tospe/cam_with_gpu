@@ -13,6 +13,7 @@
 //   first-result latency = T(1); steady interval = (T(64) - T(32)) / 32; total = T(64).
 //   hw: 5 warm-up + 30 reps, clean cold L2 before every kernel; trace: each kernel once; xferlat: in-kernel
 //   submit->result-visible latency for schedule A, W = 0 (used to choose W).
+//   launch: kernel with Q = 0 queries (launch + barrier init only), hw 30 reps or trace once: timing-boundary baseline.
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -237,6 +238,19 @@ int main(int argc, char** argv) {
     auto c = check(); printf("trace,mismatch_results=%d,mismatch_queries=%d,mismatch_work=%d\n", c[0], c[1], c[2]);
     return (c[0] || c[1] || c[2]) ? 1 : 0;
   }
+  if (mode == "launch") {
+    auto run0 = [&]() {
+      CK(cudaEventRecord(e0));
+      if (is_e) sched_e<<<streams, 256, smem>>>(qbuf, rbuf, out, workout, 0, 0, W, S);
+      else sched_ac<<<streams, 128, smem>>>(qbuf, rbuf, out, workout, 0, 0, W, sched == 'A', nullptr);
+      CK(cudaEventRecord(e1)); CK(cudaEventSynchronize(e1)); CK(cudaGetLastError());
+      float ms; CK(cudaEventElapsedTime(&ms, e0, e1)); return (double)ms * 1e3;
+    };
+    if (getenv("SCHED_TRACE_ONCE")) { run0(); printf("launch,trace,done\n"); return 0; }
+    for (int r = 0; r < 5; ++r) run0();
+    std::vector<double> v; for (int r = 0; r < 30; ++r) v.push_back(run0());
+    stats("launch_q0_us", v); return 0;
+  }
   if (mode == "xferlat") {  // schedule A, W = 0: submit (store+load issue) -> result visible, thread 0, 64 queries
     std::vector<double> v;
     for (int r = 0; r < 10; ++r) {
@@ -244,7 +258,11 @@ int main(int argc, char** argv) {
       std::vector<u64> h(64); CK(cudaMemcpy(h.data(), xfer, 64 * 8, cudaMemcpyDeviceToHost));
       for (u64 x : h) v.push_back((double)x);
     }
-    stats("xferlat_cycles", v); return 0;
+    stats("xferlat_cycles", v);
+    std::vector<double> first, rest;  // per-query position: first query of the kernel vs the others
+    for (size_t i = 0; i < v.size(); ++i) (i % 64 == 0 ? first : rest).push_back(v[i]);
+    stats("xferlat_first_query_cycles", first); stats("xferlat_later_queries_cycles", rest);
+    return 0;
   }
   for (int r = 0; r < 5; ++r) { reset(); for (int k = 0; k < 3; ++k) launch(k, nullptr); }
   std::vector<double> t1, t32, t64, interval; int bad = 0;

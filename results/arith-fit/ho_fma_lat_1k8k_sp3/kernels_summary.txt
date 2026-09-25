@@ -1,0 +1,7 @@
+-gpgpu_deadlock_detect                    1 # Stop the simulation at deadlock (1=on (default), 0=off)
+kernel_name = _Z9fma_chainifPfPy 
+gpu_sim_cycle = 9505
+gpu_sim_insn = 1245
+kernel_name = _Z9fma_chainifPfPy 
+gpu_sim_cycle = 52513
+gpu_sim_insn = 9757

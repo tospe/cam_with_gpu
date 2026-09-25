@@ -1,0 +1,9 @@
+date: 2026-09-25T17:24:23-04:00
+trace: /localhome/tsousape/cam_with_gpu/traces/fma_indep_k2_w32/traces/kernelslist.g
+config: SM90_H100_PCIe_dev
+extra options: -trace_opcode_latency_initiation_sp 4,2
+accel-sim-framework2: 62d2be80b1a4b00f91a1a83732830342a93d6850
+gpgpu-sim_distribution2: 5c27365789a3b99b8417c25489075629c2486f95
+binary: installed bin/release/accel-sim.out
+command: accel-sim.out -trace /localhome/tsousape/cam_with_gpu/traces/fma_indep_k2_w32/traces/kernelslist.g -config gpgpusim.config -config trace.config -trace_opcode_latency_initiation_sp 4,2
+exit: 0 wall_s: 490

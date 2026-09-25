@@ -1,0 +1,10 @@
+-gpgpu_deadlock_detect                    1 # Stop the simulation at deadlock (1=on (default), 0=off)
+kernel_name = _Z7sched_ePjPKjS_Pfiiii 
+gpu_sim_cycle = 8897
+gpu_sim_insn = 118174
+kernel_name = _Z7sched_ePjPKjS_Pfiiii 
+gpu_sim_cycle = 80551
+gpu_sim_insn = 3513392
+kernel_name = _Z7sched_ePjPKjS_Pfiiii 
+gpu_sim_cycle = 154411
+gpu_sim_insn = 7018432

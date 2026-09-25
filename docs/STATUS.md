@@ -23,7 +23,9 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 - [~] Validation kernels (`results/validation/REPORT.md`): async copy (cp.async), TMA bulk, repeated mbarrier phases, buffer reuse, producer/consumer — **functional + structural PASS** (0 mismatches HW/trace, progress, exact DRAM traffic, ordering enforced); **timing**: TMA ring −0.4..−14 % ✓, cp.async −19 %/+27 % ✗, dependent FMA latency **+57.7 % ✗** (sim 7.0 vs HW 4.44 cycles)
 - [x] Random-access diagnosis (`results/rand-access/`): lanes and warps swept separately on HW (36 points) and sim (8). Lanes effect real at fixed outstanding; sim (no variance) still shows ~1/3 of it -> **slowest-lane dominance NOT supported**; remains a hypothesis for the rest
 - [x] Bounded audit of detailed DRAM model bandwidth (`docs/detailed_dram_bw_audit.md`): binding limit tCCDL + bank-group interleave (observed 0.90 TB/s; ceilings 2.04 / 1.36 / 1.02 TB/s); structure models 40 of 80 HBM2e pseudo-channels. No parameters changed.
-- [ ] Before H2: ordinary-memory workload shaped like the CAM interface (query prep, contiguous transfers, completion sync, consumption), swept over concurrency and buffer depth with competing traffic
+- [~] Bounded validation suite (`docs/validation_suite_report.md`, 2026-09-25): arithmetic fit frozen (sp 3,2) but fails band (+35 % dependent, −43.5 % FP32 throughput; cause: pipeline overhead + initiation interval 2 vs documented 128 FP32/SM); memory/sync checks retained; TMA stand-in schedules A/C/E: total + interval 28/28 pass, first-result 14/14 FAIL, overlap benefit (C vs A) materially overstated
+- [ ] Decide: adopt documented SP initiation interval 1 (investigation passes 6/7 arithmetic) -> new freeze + fresh reserved cases
+- [ ] Competing memory traffic in the CAM-shaped workload (not yet added)
 - [ ] Control issuer SM / L2 partition and cache state (memcpy pre-fill) in tests — see `results/smoke-dep_chain-pciecfg/metadata.md`
 - [ ] Validation kernels (guide §5): shared-mem producer/consumer, async copy, barrier phases, warp-specialized pipeline
 - [ ] `docs/hopper_feature_coverage.md`
@@ -37,6 +39,16 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 | accel-sim-framework2 | h100-cam | see submodule (upstream `d930ad6` + tracer fix + PCIe trace.configs) |
 | gpgpu-sim_distribution2 | h100-cam | see submodule (upstream `91880c5` + PCIe configs + false-deadlock fix) |
 | NVBit | release | v1.8 |
+
+## Experiments currently supported (H2, preliminary, dev config + frozen sp 3,2)
+
+| Supported | Not supported yet |
+|---|---|
+| Steady-state completion interval / total time of A, C, E at fixed useful work | Size of overlap benefit (C vs A) — overstated |
+| Schedule rankings; ring depth 1 vs 2 vs 4 | Warp-specialization benefit at long work — understated |
+| Resident-table streaming transfers (TMA) at 1–16 streams | First-result / single-request latency — 32–51 % low |
+| | Absolute independent-work duration (arithmetic) |
+| | Scattered gathers, tail latency, contention (detailed DRAM uncalibrated) |
 
 ## Standing restrictions
 

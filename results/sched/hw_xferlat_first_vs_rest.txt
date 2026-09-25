@@ -1,0 +1,4 @@
+sched=A,mode=xferlat,streams=1,W=0,slots=1,query_B=16640,result_B=16384,threads=128
+xferlat_cycles,n=640,median=1036.000,p95=1178.000,min=1026.000,max=1207.000
+xferlat_first_query_cycles,n=10,median=1037.000,p95=1041.000,min=1036.000,max=1196.000
+xferlat_later_queries_cycles,n=630,median=1036.000,p95=1176.000,min=1026.000,max=1207.000

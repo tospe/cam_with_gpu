@@ -1,0 +1,4 @@
+A streams=1: launch_q0_us,n=30,median=3.936,p95=4.672,min=3.584,max=5.024
+A streams=16: launch_q0_us,n=30,median=4.096,p95=4.640,min=3.552,max=4.736
+E streams=1: launch_q0_us,n=30,median=4.224,p95=4.928,min=3.872,max=9.600
+E streams=16: launch_q0_us,n=30,median=4.352,p95=4.640,min=3.968,max=4.704
