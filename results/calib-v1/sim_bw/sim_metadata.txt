@@ -1,0 +1,9 @@
+date: 2026-09-25T12:05:04-04:00
+trace: /localhome/tsousape/cam_with_gpu/traces/calib_bw/traces/kernelslist.g
+config: SM90_H100_PCIe
+extra options: 
+accel-sim-framework2: a238d6a946aa4996486dd66c5a7ddcbbd39765f2
+gpgpu-sim_distribution2: b1ec7f131313e6fe71da0a6f043835f2ff70f0a1
+binary: /localhome/tsousape/cam_with_gpu/accel-sim-framework2/gpu-simulator/build/accel-sim.out
+command: accel-sim.out -trace /localhome/tsousape/cam_with_gpu/traces/calib_bw/traces/kernelslist.g -config gpgpusim.config -config trace.config 
+exit: 0 wall_s: 2139

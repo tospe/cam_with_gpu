@@ -18,11 +18,12 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 - [x] Structural smoke run (`results/smoke-dep_chain-sxmcfg/`), uncalibrated
 - [x] Tracer crash: spinlock mode without detection data, fixed `f2d5df6`; use `scripts/trace_app.sh`
 - [x] `SM90_H100_PCIe` config (gpgpu-sim `fa2f6f39`, accel-sim `a238d6a`); changed params classified in its header; rest inherited/uncalibrated
-- [ ] Microbenchmarks with warm-up + repeats; hardware timing on dedicated GPU
+- [x] Calibration microbenchmarks + HW timing (`calib.cu`, `results/calib-v1`, `results/calib-fit/REPORT.md`)
+- [ ] **Decide DRAM model** (simple+283 passes all but concurrency; detailed passes latency+concurrency, fails BW) — user decision
 - [ ] Control issuer SM / L2 partition and cache state (memcpy pre-fill) in tests — see `results/smoke-dep_chain-pciecfg/metadata.md`
 - [ ] Validation kernels (guide §5): shared-mem producer/consumer, async copy, barrier phases, warp-specialized pipeline
 - [ ] `docs/hopper_feature_coverage.md`
-- [ ] Error bands defined before any fitting
+- [x] Error bands defined before any fitting (`docs/calibration_plan.md`)
 
 ## Pinned commits
 
@@ -30,7 +31,7 @@ Single place to see where the H100 CAM study stands. Update this file in the sam
 |---|---|---|
 | cam_with_gpu | main | see `git log` |
 | accel-sim-framework2 | h100-cam | `a238d6a` (upstream `d930ad6` + tracer fix + PCIe trace.config) |
-| gpgpu-sim_distribution2 | h100-cam | `fa2f6f39` (upstream `91880c5` + SM90_H100_PCIe config) |
+| gpgpu-sim_distribution2 | h100-cam | `b1ec7f13` (upstream `91880c5` + PCIe config + false-deadlock fix) |
 | NVBit | release | v1.8 |
 
 ## Waiting on user

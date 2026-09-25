@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session: what was done, what was executed vs only inspected, commits, and open issues.
 
+## 2026-09-25 (calibration)
+
+User's 6-step fit procedure followed; full account in `results/calib-fit/REPORT.md`.
+- HW: 1755 MHz; L2 272.4, DRAM 658.0 cycles/hop; BW 1962 GB/s; DRAM latency flat vs footprint (no TLB effect).
+- dram_latency 283 (frozen before held-out): fit −2.5 %, held-out −1.5..−3.1 %, L2 unchanged, BW −5.8 %; concurrency −31.7 % (FAIL).
+- Cause: HW per-access DRAM latency is widely spread (p10 567, p50 715, p99 1038); warps wait on slowest lane. Simple DRAM model has no variance. Detailed DRAM model reproduces it (+3 %) but has half the bandwidth (−57.5 %).
+- Fixed: false deadlock (gpgpu-sim b1ec7f13). Incidents: lost BW run (script edited while running -> scripts now function-wrapped); invalid first lat_hist (compiler hoisting, fixed + SASS-checked).
+- Config file unchanged; model choice pending with user.
+
 ## 2026-09-25
 
 Decisions: CAM params in GPU core cycles (L = 200); GPU confirmed dedicated (idle in nvidia-smi).
